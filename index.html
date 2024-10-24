@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina Inicial</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins&family=Sigmar&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="shortcut icon" href="img/Group 25.png" type="img/x-icon">
+    <style>
+  /* Estilos para o menu lateral */
+.side-menu {
+    height: 100%;
+    width: 0; /* Inicialmente fechado */
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #4EC067;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    padding-top: 60px;
+    color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilizando o conteúdo do menu */
+.menu-header {
+    padding: 16px;
+    background-color: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ffffff;
+}
+
+.menu-content {
+    padding: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.side-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 10px 15px;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.side-menu a:hover {
+    background-color: #5a9f4e;
+    color: #ffffff;
+}
+
+/* Aumentando a largura do menu aberto */
+.side-menu.open {
+    width: 50%; /* Aumenta para 50% da tela */
+}
+
+/* Estilizando a entrada de texto no chat */
+.chat input {
+    width: calc(100% - 20px); /* Ajusta a largura do input */
+    background-color: #fff; /* Cor de fundo */
+    padding: 10px;
+    border: 2px solid #ccc; /* Borda */
+    border-radius: 5px;
+    margin-top: 10px; /* Margem positiva */
+}
+
+.chat input:focus {
+    outline: none;
+    box-shadow: 0 0 5px var(--main-color); /* Efeito de foco */
+}
+
+.menu-chat {
+    margin-top: 0;
+    background-color: #4EC067; /* Cor de fundo do menu */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Permite que o menu ocupe toda a altura */
+    padding: 16px; /* Espaçamento interno */
+}
+
+.chat-container {
+    flex-grow: 1; /* Permite que o contêiner de chat cresça */
+    padding: 10px; /* Espaço interno */
+    overflow-y: auto; /* Permite rolagem se necessário */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os itens */
+}
+
+.chat-response {
+    width: 80%; /* Ajuste para ocupar 80% do contêiner */
+    background-color: #fff; /* Cor de fundo das respostas */
+    border: 1px solid #ccc; /* Borda ao redor das respostas */
+    border-radius: 10px; /* Bordas arredondadas */
+    padding: 10px; /* Espaço interno nas respostas */
+    margin-bottom: 10px; /* Espaço entre as respostas */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para um efeito elevado */
+    text-align: center; /* Centraliza o texto dentro da resposta */
+}
+
+.chat input {
+    width: calc(100% - 20px); /* Ajuste a largura do input */
+    background-color: #fff; /* Cor de fundo do input */
+    padding: 10px;
+    border: 2px solid #ccc; /* Borda do input */
+    border-radius: 5px;
+    margin-top: 10px; /* Margem acima do input */
+}
+
+
+        /* Estilos para o mapa Leaflet */
+        #species-map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Estilos para a seção de produtos */
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .product-card {
+            width: 250px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .product-description {
+            margin-top: 5px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .product-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .product-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-button-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .product-button-update {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header sticky">
+        <a class="logo" style="color:#4EC067; padding-left: 30px;">
+            <img src="/img/Group 25.png" style="width: 80px;" alt="logo">
+        </a>
+        <ul class="navbar">
+            <li><a href="#home" style="font-size: 1rem;">Home</a></li>
+            <!-- <li><a href="#extinção" style="font-size: 1rem;">Extinção</a></li> -->
+            <li><a href="#sobre-nos" style="font-size: 1rem;">Sobre nós</a></li>
+            <li><a href="#Serviços" style="font-size: 1rem;">Produtos</a></li>
+            <!-- <li><a href="#Creators" style="font-size: 1rem;">Criadores</a></li> -->
+            <li><a class="Cadastrar-se" href="/cadastro" style="font-size: 1rem;">Cadastra-se </a></li>
+        </ul>
+
+        <div class="h-icons" style="margin-top: -10px;">
+            <a href="/chat">
+                <img  style="width: 20px;" src="img/chat-gpt-removebg-preview.png" alt="Menu">
+            </a>
+        </div>
+        
+    </header>
+
+    <!-- Home Section  -->
+    <section class="home" id="home">
+        <div class="home-text">
+            <h1>Bem vindo a<br> <span id="typed-text"></span></h1>
+            <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+            <p><span>Nós</span> Somos uma empresa dedicada à preservação do meio ambiente e ao combate à extinção de espécies ameaçadas</p>
+            <a href="#sobre-nos" class="choose_btn" style="text-decoration: none;">Mais Sobre</a>
+        </div>
+        <div class="home-img">
+            <img src="img/pexels-jordy-neves-158520533-11216782.jpg" alt="imagem-home">
+        </div>
+    </section>
+
+    <!-- Pizza Options container section  -->
+
+    <section class="container" id="extinção">
+        <div class="main-text">
+            <h2>Animais em risco de extinção</h2>
+            <p>Alguns dos <span>503</span> que necessitam de ajudas</p>
+        </div>
+
+        <div class="container-box">
+            <a href="/oncaPintada" style="text-decoration: none;">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/OnçPintada.jpg" alt="foto-onçaPintada">
+                    </div>
+                    <div class="container-text" style="color: black;">
+                        <p>Onça-pintada </p>
+                    </div>
+                </div>
+            </a>
+            <a href="/macacoAranha" style="text-decoration: none;">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/Macaco-aranha.jpg" alt="foto-macaca-prego">
+                    </div>
+                    <div class="container-text" style="color: #000">
+                        <p>macaco-aranha</p>
+                    </div>
+                </div>
+            </a>
+            <a href="/gaviaoReal" style="text-decoration: none;">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/GaviaoReal.jpg" alt="foto-Gavião-real">
+                    </div>
+                    <div class="container-text" style="color:#000">
+                        <p>Gavião-real</p>
+                    </div>
+                </div>
+        </div>
+        </a>
+        <a href="/botoCorDeRosa" style="text-decoration: none;">
+            <div class="container-box">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/botoCorDeRosa2.jpg" alt="foto-botoCorDeRosa">
+                    </div>
+                    <div class="container-text" style="color: #000;">
+                        <p>Boto-cor-de-rosa </p>
+                    </div>
+                </div>
+        </a>
+        <a href="/peixeBoi" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="container-img">
+                    <img src="img/peixeBoi.jpg" alt="foto-peixeBoi">
+                </div>
+                <div class="container-text" style="color: #000;">
+                    <p>Peixe-boi </p>
+                </div>
+            </div>
+        </a>
+        <a href="/ariranha" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="container-img">
+                    <img src="img/ariranha.jpg" alt="foto-ariranha">
+                </div>
+                <div class="container-text" style="color: #000;">
+                    <p>Ariranha</p>
+                </div>
+            </div>
+            </div>
+        </a>
+        <a href="/ararajuba" style="text-decoration: none;">
+            <div class="container-box">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/ararajuba.jpg" alt="foto-ararajuba">
+                    </div>
+                    <div class="container-text" style="color: #000;">
+                        <p>Ararajuba </p>
+                    </div>
+                </div>
+        </a>
+        <a href="/sauimDeColeira" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="container-img">
+                    <img src="img/sauim-de-coleira.jpg" alt="foto-sauim-de-coleira">
+                </div>
+                <div class="container-text" style="color: #000;">
+                    <p>sauim-de-coleira</p>
+                </div>
+            </div>
+        </a>
+        <a href="/GatoMaracaja" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="container-img">
+                    <img src="img/Gato-maracajá.jpg" alt="foto-Gato-maracajá">
+                </div>
+                <div class="container-text" style="color: #000;">
+                    <p> Gato-maracajá </p>
+                </div>
+            </div>
+            </div>
+        </a>
+        <a href="/oncaParda" style="text-decoration: none ;">
+            <div class="container-box">
+                <div class="c-mainbox">
+                    <div class="container-img">
+                        <img src="img/onçaParda.jpg" alt="foto-Onça Parda">
+                    </div>
+                    <div class="container-text" style="color: #000;">
+                        <p>Onça Parda </p>
+                    </div>
+                </div>
+        </a>
+        <a href="/uacari" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="container-img">
+                    <img src="img/Uacari.jpg" alt="foto-Uacari">
+                </div>
+                <div class="container-text" style="color: #000;">
+                    <p>Uacari</p>
+                </div>
+            </div>
+        </a>
+        <a href="/macacoPrego" style="text-decoration: none;">
+            <div class="c-mainbox">
+                <div class="scroll-container">
+                    <div class="container-img">
+
+                        <img src="img/Macaco-prego.jpg" alt="foto-Macaco-prego">
+                    </div>
+                </div>
+                <div class="container-text" style="color:#000">
+                    <p>Macaco-prego
+                </div>
+            </div>
+            </div>
+        </a>
+    </section>
+
+    <!-- Mapa Leaflet -->
+
+
+    <section class="about" id="sobre-nos">
+        <div class="home">
+            <div class="home-img">
+                <img src="img/pexels-daniel-sarmiento-314143596-27896645.jpg" alt="Sobre Nós" class="img-about">
+            </div>
+            <div class="home-text">
+                <h1><span>Sobre Nós</span></h1>
+                <p>Na EcoGroup, nosso compromisso é com a preservação do meio ambiente e o combate à extinção de espécies ameaçadas.</p>
+                <p>Para cada item vendido, destinamos parte do valor à proteção de habitats e, a cada novo cadastro, plantamos uma árvore. Assim, transformamos cada compra em uma oportunidade de salvar a biodiversidade.</p>
+                <p class="texto-remover">Junte-se a nós e faça a diferença por um futuro mais verde!
+
+                </p>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="menu" id="Serviços">
+        <div class="container text-center  my-5">
+            <h2><span>Alguns das Nossas Ideias</span></h2>
+            <b>Feito pra você<br> Ajudar os nossos animais</b>
+            <p>Caso não tenha ideais use nosso chat-bot</p>
+        </div>
+        <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" id="search-input" placeholder="pesquisar"
+                aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">pesquisar</button>
+        </form>
+
+        <div id="search-results"></div>
+
+        <script>
+            // Função de pesquisa de produtos
+            async function pesquisarProdutos(event) {
+                event.preventDefault(); // Impede o envio do formulário
+                const termo = document.getElementById('search-input').value.toLowerCase();
+                const response = await fetch('/produtos');
+                const produtos = await response.json();
+
+                const resultados = produtos.filter(produto =>
+                    produto.nome.toLowerCase().includes(termo)
+                );
+
+                exibirResultados(resultados);
+            }
+
+            // Função para exibir os resultados da pesquisa
+            function exibirResultados(produtos) {
+                const resultadosContainer = document.getElementById('search-results');
+                resultadosContainer.innerHTML = '';
+
+                if (produtos.length === 0) {
+                    resultadosContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                    return;
+                }
+
+                produtos.forEach(produto => {
+                    const item = document.createElement('div');
+                    item.className = 'produto-item';
+                    item.innerHTML = `
+                        <h4>${produto.nome}</h4>
+                        <p>R$ ${produto.preco}</p>
+                        <img src="${produto.linkImagem}" alt="${produto.nome}" style="width:100px;">
+                        <p>${produto.descricao}</p>
+                    `;
+                    resultadosContainer.appendChild(item);
+                });
+            }
+
+            // Adiciona o evento de escuta para o formulário
+            document.querySelector('form').addEventListener('submit', pesquisarProdutos);
+        </script>
+
+        <div class="container">
+            <div class="row" id="produtos-container">
+                <!-- Os produtos cadastrados aparecerão aqui -->
+            </div>
+        </div>
+    </section>
+
+    <section class="cadastro" id="cadastro">
+        <div class="container my-5">
+            <h2 class="text-center">Cadastro de Ideias</h2>
+            <form id="cadastroProduto">
+                <div class="form-group">
+                    <label for="linkImagem">Link da Imagem:</label>
+                    <input type="url" id="linkImagem" name="linkImagem" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome do serviço:</label>
+                    <input type="text" id="nome" name="nome" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="preco">Preço estimado:</label>
+                    <input type="text" id="preco" name="preco" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição:</label>
+                    <textarea id="descricao" name="descricao" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Cadastrar Produto</button>
+
+            </form>
+
+
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('cadastroProduto').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const produto = {
+                linkImagem: document.getElementById('linkImagem').value,
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value,
+                descricao: document.getElementById('descricao').value
+            };
+
+            const response = await fetch('/produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(produto)
+            });
+
+            if (response.ok) {
+                alert('Produto cadastrado com sucesso!');
+                carregarProdutos(); // Recarrega a lista de produtos
+            } else {
+                alert('Erro ao cadastrar produto.');
+            }
+        });
+
+        async function carregarProdutos() {
+            const response = await fetch('/produtos');
+            const produtos = await response.json();
+            const container = document.getElementById('produtos-container');
+            container.innerHTML = '';
+
+            produtos.forEach(produto => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 mb-4';
+                col.innerHTML = `
+                <div class="card">
+                    <img src="${produto.linkImagem}" class="card-img-top" alt="${produto.nome}">
+                    <div class="card-body">
+                        <h4 class="text-success">${produto.nome}</h4>
+                        <h5>R$ ${produto.preco}</h5>
+                        <p class="card-text">${produto.descricao}</p>
+                        <button class="btn btn-danger" onclick="excluirProduto('${produto._id}')">Excluir</button>
+                        <button class="btn btn-primary" onclick="atualizarProduto('${produto._id}')">Atualizar</button>
+
+                    </div>
+                </div>
+            `;
+                container.appendChild(col);
+            });
+        }
+
+        function atualizarProduto(produtoId) {
+            window.location.href = `/atualizar?id=${produtoId}`;
+        }
+
+        async function excluirProduto(id) {
+            const response = await fetch(`/produtos/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Produto excluído com sucesso!');
+                carregarProdutos(); // Recarrega a lista de produtos
+            } else {
+                alert('Erro ao excluir produto.');
+            }
+        }
+
+
+        // Carrega os produtos ao iniciar a página
+        window.onload = carregarProdutos;
+    </script>
+
+    <div class="ajuda-nos-container">
+
+        <div class="ajuda-nos-box border border-success">
+            <h3>Plano Básico</h3>
+            <p>O valor arrecadado será destinado ao monitoramento de espécies ameaçadas e à realização de pesquisas sobre seus habitats. Isso ajudará a coletar dados essenciais para a conservação e a desenvolver estratégias eficazes de proteção.</p>
+            <b>R$19,99 por mês</b>
+            <a href="/planos" class="btn-join">Junte-se Agora</a>
+        </div>
+        <div class="ajuda-nos-box border border-success">
+            <h3>Plano Intermediário</h3>
+            <p>Este plano ajudará na preservação e recuperação de habitats naturais. O dinheiro será usado para projetos de reflorestamento, limpeza de áreas naturais e proteção de zonas críticas para espécies ameaçadas.</p>
+            <b>R$39,99 por mês</b>
+            <a href="/planos" class="btn-join">Junte-se Agora</a>
+        </div>
+        <div class="ajuda-nos-box border border-success" id="box3">
+            <h3>Plano Premium</h3>
+            <p>Com este valor, você financiará operações de resgate de animais em perigo e o funcionamento de centros de reabilitação. Isso incluirá cuidados veterinários, alimentação e reintrodução de espécies ao seu habitat natural.</p>
+            <b>R$59,99 por mês</b>
+            <a href="/planos" class="btn-join">Junte-se a nós</a>
+        </div>
+    </div>
+    </section>
+
+    <!-- Creators Section -->
+    <section class="Creators" id="Creators">
+        <div class="Creators">
+            <h2>Criadores</h2>
+            <div class="card-group">
+                <div class="card">
+                    <img src="img/imagemCaio.jpg" class="card-img-top" alt="imagem-caio">
+                    <div class="card-body">
+                        <h5 class="card-title">Caio Gotardo</h5>
+                        <b class="card-text">full-stack developer</b>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">
+                            <div class="btn-social">
+                                <button><a href="https://www.instagram.com/caiogotardo__/"><i
+                                            class="bi bi-instagram"></i></a></button>
+                                <button><a href="https://github.com/CaioGotardo"><i
+                                            class="bi bi-github"></i></a></button>
+
+                            </div>
+                        </small>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="img/imagemMatheus.jpg" class="card-img-top" alt="imagem-matheus">
+                    <div class="card-body">
+                        <h5 class="card-title">Matheus Assumpção </h5>
+                        <b class="card-text"> full-stack developer</b>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">
+
+
+                            <small class="text-body-secondary">
+                                <div class="btn-social">
+                                    <button><a href="https://www.instagram.com/theusin.o/"><i
+                                                class="bi bi-instagram"></i></a></button>
+                                    <button><a href="https://github.com/theusin08"><i
+                                                class="bi bi-github"></i></a></button>
+
+                                </div>
+                            </small>
+
+                        </small>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="img/imagemEduardo.jpg" class="card-img-top" alt="imagem-eduardo">
+                    <div class="card-body">
+                        <h5 class="card-title">Eduardo Oliveira da Silva</h5>
+                        <b class="card-text">graphic designer </b>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">
+
+                            <small class="text-body-secondary">
+                                <div class="btn-social">
+                                    <button><a href="https://www.instagram.com/tiw_neg0/"><i
+                                                class="bi bi-instagram"></i></a></button>
+                                    <button><a href="https://github.com/oeduardosilva"><i
+                                                class="bi bi-github"></i></a></button>
+
+                                </div>
+                            </small>
+
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pesquisa de Produtos -->
+
+
+    <!-- scroll - up -->
+    <a href="#home" class="scroll-top">
+        <i class='bx bxs-chevron-up-circle'></i>
+
+
+
+    </a>
+
+    <footer class="copy-right">
+        <p>trabalho FUTURE FEST </p>
+    </footer>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let configuracao = {
+                strings: ["Eco Group "],
+                typeSpeed: 200,
+                backSpeed: 30,
+                loop: false,
+            };
+
+
+            let typed = new Typed("#typed-text", configuracao);
+        });
+
+
+        function toggleMenu() {
+            const menu = document.getElementById("sideMenu");
+            if (menu.classList.contains("open")) {
+                menu.classList.remove("open");
+            } else {
+                menu.classList.add("open");
+            }
+        }
+
+
+    </script>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chatInput = document.querySelector('.chat input');
+    const chatContainer = document.querySelector('.menu-content');
+    const loadingSpinner = document.createElement('img');
+    loadingSpinner.style.display = 'none';
+    loadingSpinner.style.width = '30px';
+    loadingSpinner.style.margin = 'auto';
+    chatContainer.appendChild(loadingSpinner);
+
+    chatInput.addEventListener('keyup', async (event) => {
+        if (event.key === 'Enter') {
+            const userInput = chatInput.value;
+            if (userInput.trim() !== '') {
+                chatInput.value = ''; 
+                chatInput.disabled = true; 
+                loadingSpinner.style.display = 'block'; 
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userInput })
+                    });
+                    const data = await response.json();
+                    if (data.error) {
+                        console.error('Erro ao enviar mensagem:', data.error);
+                        alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
+                        loadingSpinner.style.display = 'none';
+                        chatInput.disabled = false;
+                    } else {
+                        chatContainer.innerHTML += `<p style="margin: 0; text-align: right; padding: 5px;">${data.response}</p>`;
+                        chatContainer.scrollTop = chatContainer.scrollHeight; 
+                        loadingSpinner.style.display = 'none';
+                        chatInput.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar mensagem:', error);
+                    alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
+                    loadingSpinner.style.display = 'none';
+                    chatInput.disabled = false;
+                }
+            }
+        }
+    });
+});
+
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+</html>
